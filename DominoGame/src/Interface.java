@@ -63,6 +63,9 @@ public class Interface {
         currentPlayer = cpuTurn ? cpu : user;
         int nullCounter=0;
         while (!DominoGame.end) {
+
+            double sTime = System.nanoTime();
+            System.out.println(sTime);
             System.out.println("Stats");
             System.out.println("tokens at board:"+DominoGame.boardTokens.size());
             System.out.println("tokens of cpu:"+cpu.getMyTokens().size());
@@ -78,6 +81,9 @@ public class Interface {
             else
                 currentResult = user.minimaxStrategy(currentNode, 0);
             currentNode = currentResult.getNode();
+            double eTime = System.nanoTime();
+            System.out.println(eTime);
+            System.out.println(" Computation time: "+(eTime-sTime));
 
             if (currentNode!=null) {
 

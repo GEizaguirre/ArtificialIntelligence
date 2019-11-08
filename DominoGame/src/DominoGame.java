@@ -3,7 +3,7 @@ import java.util.*;
 public class DominoGame {
 
     // Minimum max level must be 1.
-    public final static int MAX_LEVELS = 2;
+    public final static int MAX_LEVELS = 5;
     public final static int MAX_NUM=6;
     public final static int MIN_NUM=0;
     public static HashSet<Token> totalTokens;

@@ -16,29 +16,20 @@ public class DominoPlayer {
     }
 
     public Result minimaxStrategy (Node node, int level){
-        //System.out.println(level);
-        // End.
-        //System.out.println("Node - will set "+node.getLastToken().getNleft()+"-"+node.getLastToken().getNright());
-        //System.out.println(" Will stay with "+node.getMyTokens().size()+" tokens");
         if (node.isFinal()) {
-            //System.out.println(" Is final");
             // Win game.
             if (node.amIWinner()) {
-                //System.out.println("I am winner");
                 return new Result(null, Integer.MAX_VALUE); }
             // Loose game.
             else {
-                //System.out.println("I am not winner");
                 return new Result(null, Integer.MIN_VALUE);
             }
         }
         else if (level == maxLevel) {
-            //System.out.println("Heuristic: "+ Heuristic.apply(h, node));
             return new Result(null, Heuristic.apply(h, node));
         }
         // Continue playing.
         else {
-            //System.out.println("Analyze successors");
             float returnValue;
             // Max-type level.
             if (level%2==0) returnValue= Integer.MIN_VALUE;
@@ -48,21 +39,12 @@ public class DominoPlayer {
             Node returnNode=null;
             Result res;
             while ((next=node.nextSuccessor())!=null) {
-                //Interface.printTokenSet(next.getMyTokens());
-                //System.out.println("Calling minimax");
                 res = minimaxStrategy(next, level+1);
-
-                //if (res.getResult()== Integer.MIN_VALUE) res.setResult(Integer.MIN_VALUE+1);
-                //if (res.getResult()== Integer.MAX_VALUE) res.setResult(Integer.MAX_VALUE-1);
                 if (((level%2==0) && (res.getResult()>=returnValue))) {
-                //if (((level%2==0) && (res.getResult()>=returnValue))) {
-                        //||(res.getResult()==returnValue && returnValue== Integer.MIN_VALUE)){
                         returnValue = res.getResult();
                         returnNode = next;
                 }
                 else if ((res.getResult()<=returnValue)) {
-                //else if ((res.getResult()<=returnValue)) {
-                    //||(res.getResult()==returnValue && returnValue== Integer.MAX_VALUE)){
                     returnValue = res.getResult();
                     returnNode = next;
                 }
@@ -71,7 +53,6 @@ public class DominoPlayer {
             if (returnNode == null){
                 returnNode = node;
             }
-            //System.out.println("Will choose value "+ returnValue);
             return new Result(returnNode, returnValue);
         }
     }
@@ -86,35 +67,16 @@ public class DominoPlayer {
 
     public boolean hasToken (short n1, short n2){
         short nleft, nright;
-        if (n1<n2) {
-            nleft=n1;
-            nright=n2;
-        } else {
-            nleft = n2;
-            nright = n1;
-        }
-        for (Token t: myTokens){
-            if (t.getNleft()==nleft && t.getNright()==nright) return true;
-        }
-        return false;
+        if (n1<n2) return myTokens.contains(new Token (n1, n2));
+        else return myTokens.contains(new Token(n2, n1));
     }
 
     public boolean removeToken (short n1, short n2) {
         short nleft, nright;
-        if (n1<n2) {
-            nright=n1;
-            nleft=n2;
-        } else {
-            nleft = n1;
-            nright = n2;
-        }
-        for (Token t: myTokens){
-            if (t.getNleft()==nleft && t.getNright()==nright) {
-                myTokens.remove(t);
-                return true;
-            }
-        }
-        return false;
+        if (n1<n2)
+            return myTokens.remove(new Token(n1, n2));
+        else
+            return myTokens.remove(new Token(n2, n1));
     }
 
     public String getName() {
