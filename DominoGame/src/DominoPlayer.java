@@ -18,11 +18,19 @@ public class DominoPlayer {
     public Result minimaxStrategy (Node node, int level){
         //System.out.println(level);
         // End.
+        //System.out.println("Node - will set "+node.getLastToken().getNleft()+"-"+node.getLastToken().getNright());
+        //System.out.println(" Will stay with "+node.getMyTokens().size()+" tokens");
         if (node.isFinal()) {
+            //System.out.println(" Is final");
             // Win game.
-            if (node.amIWinner()) return new Result(null, Integer.MAX_VALUE);
+            if (node.amIWinner()) {
+                //System.out.println("I am winner");
+                return new Result(null, Integer.MAX_VALUE); }
             // Loose game.
-            else return new Result(null, Integer.MIN_VALUE);
+            else {
+                //System.out.println("I am not winner");
+                return new Result(null, Integer.MIN_VALUE);
+            }
         }
         else if (level == maxLevel) {
             //System.out.println("Heuristic: "+ Heuristic.apply(h, node));
@@ -43,15 +51,27 @@ public class DominoPlayer {
                 //Interface.printTokenSet(next.getMyTokens());
                 //System.out.println("Calling minimax");
                 res = minimaxStrategy(next, level+1);
-                if ((level%2==0) && (res.getResult()>returnValue)){
+
+                //if (res.getResult()== Integer.MIN_VALUE) res.setResult(Integer.MIN_VALUE+1);
+                //if (res.getResult()== Integer.MAX_VALUE) res.setResult(Integer.MAX_VALUE-1);
+                if (((level%2==0) && (res.getResult()>=returnValue))) {
+                //if (((level%2==0) && (res.getResult()>=returnValue))) {
+                        //||(res.getResult()==returnValue && returnValue== Integer.MIN_VALUE)){
                         returnValue = res.getResult();
                         returnNode = next;
                 }
-                else if (res.getResult()<returnValue){
+                else if ((res.getResult()<=returnValue)) {
+                //else if ((res.getResult()<=returnValue)) {
+                    //||(res.getResult()==returnValue && returnValue== Integer.MAX_VALUE)){
                     returnValue = res.getResult();
                     returnNode = next;
                 }
+                // If could not get next movement, jump turn.
             }
+            if (returnNode == null){
+                returnNode = node;
+            }
+            //System.out.println("Will choose value "+ returnValue);
             return new Result(returnNode, returnValue);
         }
     }

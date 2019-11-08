@@ -76,32 +76,41 @@ public class Interface {
             if (cpuTurn)
                 currentResult = cpu.minimaxStrategy(currentNode, 0);
             else
-                //currentResult = user.userDisplay();
                 currentResult = user.minimaxStrategy(currentNode, 0);
             currentNode = currentResult.getNode();
 
+            if (currentNode!=null) {
 
-           if (currentNode!=null) {
 
-                System.out.println("Set: <" + currentNode.getLastToken().getNleft() + ">--<" + currentNode.getLastToken().getNright() + ">");
-                Boolean res = currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
-                lastNode.setNright(currentNode.getLastToken().getNright()); lastNode.setNleft(currentNode.getLastToken().getNleft());
-                if (!res) {
-                    System.out.println("--------");
-                    System.out.println("ERROR");
-                    printTokenSet(currentNode.getMyTokens());
-                    System.out.println("--------");
-                }
-                printTokenSet(currentPlayer.getMyTokens());
-                DominoGame.update(currentNode);
-
-               if (DominoGame.isEnd(currentPlayer.getMyTokens())) {
-                   DominoGame.end=true;
-                   if (cpuTurn) {
-                       winner = (currentResult.getResult()== Integer.MAX_VALUE)?cpu.getName():user.getName();
-                   } else {
-                       winner = (currentResult.getResult()== Integer.MAX_VALUE)?user.getName():cpu.getName();
+               if (currentNode.getBoardTokens().size()!=DominoGame.boardTokens.size()) {
+                   System.out.println("Set: <" + currentNode.getLastToken().getNleft() + ">--<" + currentNode.getLastToken().getNright() + ">");
+                   Boolean res = currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
+                   lastNode.setNright(currentNode.getLastToken().getNright());
+                   lastNode.setNleft(currentNode.getLastToken().getNleft());
+                   DominoGame.update(currentNode);
+                   if (!res) {
+                       System.out.println("--------");
+                       System.out.println("ERROR");
+                       printTokenSet(currentNode.getMyTokens());
+                       System.out.println("--------");
                    }
+               }
+               //printTokenSet(currentPlayer.getMyTokens());
+               System.out.println("Board state: <"+DominoGame.nleft+">--<"+DominoGame.nright+">");
+
+               if (currentNode.isFinal()) {
+                   //System.out.println("is end - cpu turn:"+cpuTurn);
+                   //System.out.println("Final value: "+currentResult.getResult());
+                   DominoGame.end=true;
+                   if (DominoGame.testTie(cpu.getMyTokens(), user.getMyTokens())) winner="Tie";
+                   else {
+                       if (cpuTurn) {
+                           winner = (currentResult.getResult() == Integer.MAX_VALUE) ? cpu.getName() : user.getName();
+                       } else {
+                           winner = (currentResult.getResult() == Integer.MAX_VALUE) ? user.getName() : cpu.getName();
+                       }
+                   }
+                   //System.out.println("(1) Set winner at"+winner);
                }
                else {
                    cpuTurn = !cpuTurn;
@@ -112,23 +121,31 @@ public class Interface {
            else {
 
                if (DominoGame.isEnd(currentPlayer.getMyTokens())) {
+                   //System.out.println("is end - cpu turn:"+cpuTurn);
+                   //System.out.println("Final value: "+currentResult.getResult());
                    DominoGame.end=true;
-                   if (cpuTurn) {
-                        winner = (currentResult.getResult()== Integer.MAX_VALUE)?cpu.getName():user.getName();
-                   } else {
-                       winner = (currentResult.getResult()== Integer.MAX_VALUE)?user.getName():cpu.getName();
+                   if (DominoGame.testTie(cpu.getMyTokens(), user.getMyTokens())) winner="Tie";
+                   else {
+                       if (cpuTurn) {
+                           winner = (currentResult.getResult() == Integer.MAX_VALUE) ? cpu.getName() : user.getName();
+                       } else {
+                           winner = (currentResult.getResult() == Integer.MAX_VALUE) ? user.getName() : cpu.getName();
+                       }
                    }
+                   //System.out.println("(1) Set winner at"+winner);
                }
                else {
                    cpuTurn = !cpuTurn;
                    currentPlayer = cpuTurn ? cpu : user;
                    currentNode = new Node(DominoGame.nleft, DominoGame.nright, currentPlayer.getMyTokens(), DominoGame.boardTokens, lastNode);
                }
+
            }
 
         }
 
-        System.out.println("The winner is "+winner);
+        if (winner.compareTo("Tie")!=0) System.out.println("The winner is "+winner);
+        else System.out.println("The game resulted in tie");
         System.out.println("CPU left tokens.");
         printTokenSet(cpu.getMyTokens());
         System.out.println("User left tokens.");

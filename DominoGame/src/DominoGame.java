@@ -3,7 +3,7 @@ import java.util.*;
 public class DominoGame {
 
     // Minimum max level must be 1.
-    public final static int MAX_LEVELS = 1;
+    public final static int MAX_LEVELS = 2;
     public final static int MAX_NUM=6;
     public final static int MIN_NUM=0;
     public static HashSet<Token> totalTokens;
@@ -91,6 +91,14 @@ public class DominoGame {
         for (Token t : auxTotalTokens) {
             p2.getMyTokens().add(t);
         }
+    }
+
+    public static boolean testTie (HashSet<Token> u1, HashSet<Token> u2){
+        if (!u1.isEmpty() && !u2.isEmpty())
+            return ((u1.stream().map( (x) ->  x.getNright() + x.getNleft() ).reduce(Integer::sum) )
+                    ==
+                    (u2.stream().map( (x) ->  x.getNright() + x.getNleft() ).reduce(Integer::sum) ));
+        else return false;
     }
 
     public static String graphicBoardEdges(){

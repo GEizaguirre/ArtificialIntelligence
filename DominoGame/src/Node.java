@@ -80,6 +80,7 @@ public class Node {
 
     // Test if neither this player or the other have successors.
     public boolean isFinal() {
+        if (myTokens.size()==0) return true;
         for (Token t: myTokens) {
             HashSet<Token> updatedMyTokens = new HashSet<>();
             for (Token t1: myTokens) updatedMyTokens.add(t1);
@@ -96,12 +97,16 @@ public class Node {
         }
         successorIterator = successors.iterator();
         if (successors.isEmpty()){
+            //System.out.println(tLeft +" - "+tRight);
+            //System.out.println("Sucessors is empty");
             // Test opponent's movements (it has successors?).
             for (Token t: DominoGame.totalTokens){
                 if (!myTokens.contains(t) && (!boardTokens.contains(t)) && (((t.getNleft()==tLeft))
                             || ((t.getNleft()==tRight)
                             || (t.getNright()==tRight)
-                            || (t.getNright()==tLeft)))) return false;
+                            || (t.getNright()==tLeft)))) {
+                    //System.out.println("Other player can continue");
+                        return false;  }
             }
             return true;
         }
