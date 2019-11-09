@@ -1,5 +1,7 @@
 import java.util.*;
 
+enum ALGORITHM { MINIMAX, ALPHABETA};
+
 public class DominoPlayer {
     private HashSet<Token> myTokens;
     private String name;
@@ -13,21 +15,21 @@ public class DominoPlayer {
         h = hs;
     }
 
-    public Result minimaxStrategy (Node node, int level){
+    public MinimaxResult minimaxStrategy (Node node, int level){
         if (node.isFinal()) {
             // Win game.
             if (node.amIWinner()) {
                 //System.out.println("GOT WIN RESULT");
-                return new Result(null, Integer.MAX_VALUE); }
+                return new MinimaxResult(null, Integer.MAX_VALUE); }
             // Loose game.
             else {
                 //System.out.println("GOT LOOSE RESULT");
-                return new Result(null, Integer.MIN_VALUE);
+                return new MinimaxResult(null, Integer.MIN_VALUE);
             }
         }
         else if (level == maxLevel) {
             //System.out.println("Board <"+node.gettLeft()+">--<"+node.gettRight()+"> heuristic:"+Heuristic.apply(h, node));
-            return new Result(null, Heuristic.apply(h, node));
+            return new MinimaxResult(null, Heuristic.apply(h, node));
         }
         // Continue playing.
         else {
@@ -37,7 +39,7 @@ public class DominoPlayer {
 
             Node next=null;
             Node returnNode=null;
-            Result res;
+            MinimaxResult res;
             // Max-type level.
             if (level%2==0) returnValue= Integer.MIN_VALUE;
                 // Min-type level.
@@ -62,7 +64,62 @@ public class DominoPlayer {
             if (returnNode == null){
                 returnNode = node;
             }
-            return new Result(returnNode, returnValue);
+            return new MinimaxResult(returnNode, returnValue);
+        }
+    }
+
+    public MinimaxResult abStrategy (Node node, int level, float alphav, float betav){
+        float alpha = alphav;
+        float beta = betav;
+        if (node.isFinal()) {
+            // Win game.
+            if (node.amIWinner()) {
+                //System.out.println("GOT WIN RESULT");
+                return new MinimaxResult(null, Integer.MAX_VALUE); }
+            // Loose game.
+            else {
+                //System.out.println("GOT LOOSE RESULT");
+                return new MinimaxResult(null, Integer.MIN_VALUE);
+            }
+        }
+        else if (level == maxLevel) {
+            //System.out.println("Board <"+node.gettLeft()+">--<"+node.gettRight()+"> heuristic:"+Heuristic.apply(h, node));
+            return new MinimaxResult(null, Heuristic.apply(h, node));
+        }
+        // Continue playing.
+        else {
+            float returnValue;
+
+            if (level!=0) node = node.turnTokens();
+
+            Node next=null;
+            Node returnNode=null;
+            MinimaxResult res;
+            while (((next=node.nextSuccessor())!=null) && (alpha<beta)) {
+                // Evaluate other player's turn.
+                //System.out.println("Level "+level+" successor, set <"+next.getLastToken().getNleft()+">--<"+next.getLastToken().getNright()+">");
+                //System.out.println("This player has tokens: ");
+                //Interface.printTokenSet(next.getMyTokens());
+                res = abStrategy(next, level+1, alpha, beta);
+
+                if (((level%2==0) && (res.getResult()>=alpha))) {
+                    alpha = res.getResult();
+                    returnNode = next;
+                }
+                else if ((res.getResult()<=beta)) {
+                    beta = res.getResult();
+                    returnNode = next;
+                }
+                // If could not get next movement, jump turn.
+            }
+            if (returnNode == null){
+                returnNode = node;
+            }
+            // Max-type level.
+            if (level%2==0) returnValue= alpha;
+                // Min-type level.
+            else returnValue = beta;
+            return new MinimaxResult(returnNode, returnValue);
         }
     }
 

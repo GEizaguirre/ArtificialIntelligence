@@ -1,9 +1,9 @@
-public class Result {
+public class MinimaxResult {
 
     private Node node;
     private float result;
 
-    public Result(Node node, float result) {
+    public MinimaxResult(Node node, float result) {
         this.node = node;
         this.result = result;
     }
