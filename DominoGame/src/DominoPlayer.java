@@ -1,8 +1,6 @@
 import java.util.*;
 
 public class DominoPlayer {
-
-    final static int NUM_TOKENS = 28;
     private HashSet<Token> myTokens;
     private String name;
     private int maxLevel;
@@ -19,27 +17,38 @@ public class DominoPlayer {
         if (node.isFinal()) {
             // Win game.
             if (node.amIWinner()) {
+                //System.out.println("GOT WIN RESULT");
                 return new Result(null, Integer.MAX_VALUE); }
             // Loose game.
             else {
+                //System.out.println("GOT LOOSE RESULT");
                 return new Result(null, Integer.MIN_VALUE);
             }
         }
         else if (level == maxLevel) {
+            //System.out.println("Board <"+node.gettLeft()+">--<"+node.gettRight()+"> heuristic:"+Heuristic.apply(h, node));
             return new Result(null, Heuristic.apply(h, node));
         }
         // Continue playing.
         else {
             float returnValue;
-            // Max-type level.
-            if (level%2==0) returnValue= Integer.MIN_VALUE;
-            // Min-type level.
-            else returnValue = Integer.MAX_VALUE;
+
+            if (level!=0) node = node.turnTokens();
+
             Node next=null;
             Node returnNode=null;
             Result res;
+            // Max-type level.
+            if (level%2==0) returnValue= Integer.MIN_VALUE;
+                // Min-type level.
+            else returnValue = Integer.MAX_VALUE;
             while ((next=node.nextSuccessor())!=null) {
+                // Evaluate other player's turn.
+                //System.out.println("Level "+level+" successor, set <"+next.getLastToken().getNleft()+">--<"+next.getLastToken().getNright()+">");
+                //System.out.println("This player has tokens: ");
+                //Interface.printTokenSet(next.getMyTokens());
                 res = minimaxStrategy(next, level+1);
+
                 if (((level%2==0) && (res.getResult()>=returnValue))) {
                         returnValue = res.getResult();
                         returnNode = next;

@@ -14,7 +14,6 @@ public class Heuristic {
      }
 
      public static float nDifferentNumber(Node node){
-         //System.out.println("Inside heuristic");
          //Interface.printTokenSet(node.getMyTokens());
          HashSet<Short> numbers = new HashSet<>();
          for (Token t: node.getMyTokens()){

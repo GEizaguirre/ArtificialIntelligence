@@ -56,6 +56,24 @@ public class Node {
         this.boardTokens = boardTokens;
     }
 
+    public boolean hasOpponentSuccesors() {
+        for (Token t: DominoGame.totalTokens) {
+            if (!boardTokens.contains(t) && !myTokens.contains(t)) {
+                if ((t.getNleft() == tLeft) || (t.getNright() == tLeft) || (t.getNleft() == tRight) ||(t.getNright() == tRight))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasSuccesors() {
+        for (Token t: myTokens) {
+            if ((t.getNleft() == tLeft) || (t.getNright() == tLeft) || (t.getNleft() == tRight) ||(t.getNright() == tRight))
+                    return true;
+        }
+        return false;
+    }
+
     public Node nextSuccessor (){
         if (successorIterator==null) {
             for (Token t: myTokens) {
@@ -67,10 +85,13 @@ public class Node {
                 HashSet<Token> updatedBoardTokens = new HashSet<>();
                 for (Token t1: boardTokens) updatedBoardTokens.add(t1);
                 updatedBoardTokens.add(t);
-                if (t.getNleft()==tLeft) successors.add(new Node(tRight, t.getNright(), updatedMyTokens, updatedBoardTokens, t));
-                if (t.getNright()==tLeft) successors.add(new Node(tRight, t.getNleft(), updatedMyTokens, updatedBoardTokens, t));
-                if (t.getNleft()==tRight) successors.add(new Node(t.getNright(), tLeft, updatedMyTokens, updatedBoardTokens, t));
-                if (t.getNright()==tRight) successors.add(new Node(t.getNleft(), tLeft, updatedMyTokens, updatedBoardTokens, t));
+                //System.out.println("Succesor analysis: player Token: "+t.graphicFormat()+" board: <"+tLeft+">--<"+tRight+">");
+                // Equality manager for succesor number simplification.
+                boolean eq = ((t.getNleft()==t.getNright())||(tLeft==tRight));
+                if (t.getNleft()==tLeft) { successors.add(new Node(tRight, t.getNright(), updatedMyTokens, updatedBoardTokens, t)); if(eq) continue; }
+                if (t.getNright()==tLeft) { successors.add(new Node(tRight, t.getNleft(), updatedMyTokens, updatedBoardTokens, t)); if(eq) continue; }
+                if (t.getNleft()==tRight) { successors.add(new Node(t.getNright(), tLeft, updatedMyTokens, updatedBoardTokens, t)); if(eq) continue; }
+                if (t.getNright()==tRight) {  successors.add(new Node(t.getNleft(), tLeft, updatedMyTokens, updatedBoardTokens, t));  if(eq) continue; }
             }
             successorIterator = successors.iterator();
         }
@@ -80,42 +101,14 @@ public class Node {
 
     // Test if neither this player or the other have successors.
     public boolean isFinal() {
-        if (myTokens.size()==0) return true;
-        for (Token t: myTokens) {
-            HashSet<Token> updatedMyTokens = new HashSet<>();
-            for (Token t1: myTokens) updatedMyTokens.add(t1);
-            //System.out.println("updated");
-            //Interface.printTokenSet(updatedMyTokens);
-            updatedMyTokens.remove(t);
-            HashSet<Token> updatedBoardTokens = new HashSet<>();
-            for (Token t1: boardTokens) updatedBoardTokens.add(t1);
-            updatedBoardTokens.add(t);
-            if (t.getNleft()==tLeft) successors.add(new Node(tRight, t.getNright(), updatedMyTokens, updatedBoardTokens, t));
-            if (t.getNright()==tLeft) successors.add(new Node(tRight, t.getNleft(), updatedMyTokens, updatedBoardTokens, t));
-            if (t.getNleft()==tRight) successors.add(new Node(t.getNright(), tLeft, updatedMyTokens, updatedBoardTokens, t));
-            if (t.getNright()==tRight) successors.add(new Node(t.getNleft(), tLeft, updatedMyTokens, updatedBoardTokens, t));
-        }
-        successorIterator = successors.iterator();
-        if (successors.isEmpty()){
-            //System.out.println(tLeft +" - "+tRight);
-            //System.out.println("Sucessors is empty");
-            // Test opponent's movements (it has successors?).
-            for (Token t: DominoGame.totalTokens){
-                if (!myTokens.contains(t) && (!boardTokens.contains(t)) && (((t.getNleft()==tLeft))
-                            || ((t.getNleft()==tRight)
-                            || (t.getNright()==tRight)
-                            || (t.getNright()==tLeft)))) {
-                    //System.out.println("Other player can continue");
-                        return false;  }
-            }
-            return true;
-        }
-        else return false;
+        if ((myTokens.isEmpty()) || ((boardTokens.size()+myTokens.size())==DominoGame.NUM_TOKENS) || (!hasSuccesors() && !hasOpponentSuccesors())) return true;
+        return false;
     }
 
     // Get winner based on points.
     public boolean amIWinner () {
         if (myTokens.isEmpty()) return true;
+        if ((boardTokens.size()+myTokens.size())==DominoGame.NUM_TOKENS) return false;
         float opponentPoints=0;
         for (Token t: DominoGame.totalTokens){
             if (!myTokens.contains(t) && !boardTokens.contains(t)) opponentPoints = opponentPoints + t.getNleft() + t.getNright();
@@ -129,5 +122,15 @@ public class Node {
 
     public void setLastToken(Token lastToken) {
         this.lastToken = lastToken;
+    }
+
+    // Changes tokens of the current player
+    public Node turnTokens () {
+        HashSet <Token> newTokens = new HashSet<>();
+        for (Token t : DominoGame.totalTokens){
+            if (!myTokens.contains(t) && !boardTokens.contains(t)) newTokens.add(t);
+        }
+        myTokens = newTokens;
+        return this;
     }
 }

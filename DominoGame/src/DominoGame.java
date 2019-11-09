@@ -3,9 +3,13 @@ import java.util.*;
 public class DominoGame {
 
     // Minimum max level must be 1.
-    public final static int MAX_LEVELS = 5;
-    public final static int MAX_NUM=6;
+    public final static int MAX_LEVELS = 3;
+
+    public final static int MAX_NUM= 6;
     public final static int MIN_NUM=0;
+    public static int NUM_TOKENS = 28;
+    public final static int FIRST_LEFT = 0;
+    public static final int FIRST_RIGHT = 0;
     public static HashSet<Token> totalTokens;
     public static HashSet<Token> boardTokens;
     public static boolean end = false;
@@ -50,6 +54,7 @@ public class DominoGame {
                 totalTokens.add(new Token(i,j));
             }
         }
+        NUM_TOKENS = totalTokens.size();
     }
 
     public static void setTotalTokens(HashSet<Token> tt) {
