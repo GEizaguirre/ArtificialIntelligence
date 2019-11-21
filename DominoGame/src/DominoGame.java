@@ -2,18 +2,16 @@ import java.util.*;
 
 public class DominoGame {
 
-    // Minimum max level must be 1.
-    public static int MAX_LEVELS = 3;
-
+    public static int SEED = 123;
     public final static int MAX_NUM= 6;
     public final static int MIN_NUM=0;
     public static int NUM_TOKENS = 28;
-    public final static int FIRST_LEFT = 0;
-    public static final int FIRST_RIGHT = 0;
+    public final static Integer FIRST_LEFT = 6;
+    public static final Integer FIRST_RIGHT = 6;
     public static HashSet<Token> totalTokens;
     public static HashSet<Token> boardTokens;
     public static boolean end = false;
-    public static int nleft, nright;
+    public static Integer nleft, nright;
 
     public static void start () {
         generateDominoTokens();
@@ -50,8 +48,8 @@ public class DominoGame {
 
     public static void generateDominoTokens(){
         totalTokens = new HashSet<>();
-        for (short i=MIN_NUM; i<=MAX_NUM; i++){
-            for (short j=i; j<=MAX_NUM; j++){
+        for (int i=MIN_NUM; i<=MAX_NUM; i++){
+            for (int j=i; j<=MAX_NUM; j++){
                 totalTokens.add(new Token(i,j));
             }
         }
@@ -63,9 +61,9 @@ public class DominoGame {
     }
 
     public static void update(Node node) {
+
         boardTokens.addAll(node.getBoardTokens());
         end = node.isFinal();
-        if (node.isFinal()) System.out.println("FINAL");
         /*System.out.println("-------");
         Interface.printTokenSet(node.getBoardTokens());
         Interface.printTokenSet(node.getMyTokens());
@@ -76,7 +74,9 @@ public class DominoGame {
     }
 
     public static void distributeCards(DominoPlayer p1, DominoPlayer p2) {
-        Random rand = new Random();
+        // Ensure randomness.
+        Random rand = new Random(System.currentTimeMillis()%Integer.MAX_VALUE);
+        SEED = (SEED+1)%Integer.MAX_VALUE+1;
         List<Token> auxTotalTokens = new LinkedList<>();
         for (Token t : totalTokens) auxTotalTokens.add(t);
 

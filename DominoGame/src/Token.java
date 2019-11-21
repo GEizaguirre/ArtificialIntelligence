@@ -1,24 +1,24 @@
 public class Token {
-    private short nright, nleft;
+    private Integer nright, nleft;
 
-    public Token(short nright, short nleft) {
+    public Token(Integer nright, Integer nleft) {
         this.nright = nright;
         this.nleft = nleft;
     }
 
-    public short getNright() {
+    public Integer getNright() {
         return nright;
     }
 
-    public void setNright(short nright) {
+    public void setNright(Integer nright) {
         this.nright = nright;
     }
 
-    public short getNleft() {
+    public Integer getNleft() {
         return nleft;
     }
 
-    public void setNleft(short nleft) {
+    public void setNleft(Integer nleft) {
         this.nleft = nleft;
     }
 
@@ -36,6 +36,7 @@ public class Token {
 
     public String graphicFormat () {
 
-        return ("<"+nleft+">--<"+nright+">");
+        if (nleft<nright) return ("<"+nleft+">--<"+nright+">");
+        else return ("<"+nright+">--<"+nleft+">");
     }
 }

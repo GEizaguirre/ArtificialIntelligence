@@ -1,9 +1,9 @@
-public class MinimaxResult {
+public class AlgorithmResult {
 
     private Node node;
     private float result;
 
-    public MinimaxResult(Node node, float result) {
+    public AlgorithmResult(Node node, float result) {
         this.node = node;
         this.result = result;
     }
@@ -24,4 +24,6 @@ public class MinimaxResult {
     public void setResult(float result) {
         this.result = result;
     }
+
+
 }
