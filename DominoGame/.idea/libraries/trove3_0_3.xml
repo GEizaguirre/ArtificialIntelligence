@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="trove3.0.3">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/libs/trove3.0.3.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,3 +1,5 @@
+import gnu.trove.THashSet;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -7,12 +9,12 @@ public class Node {
     private int level = 0;
     private Integer tRight, tLeft;
     private Token lastToken;
-    private HashSet<Token> myTokens;
-    private HashSet<Token> boardTokens;
+    private THashSet<Token> myTokens;
+    private THashSet<Token> boardTokens;
     private List<Node> successors;
     Iterator<Node> successorIterator;
 
-    public Node(Integer tRight, Integer tLeft, HashSet<Token> myTokens, HashSet<Token> boardTokens, Token lt, int level) {
+    public Node(Integer tRight, Integer tLeft, THashSet<Token> myTokens, THashSet<Token> boardTokens, Token lt, int level) {
         this.tRight = tRight;
         this.tLeft = tLeft;
         this.myTokens = myTokens;
@@ -38,19 +40,19 @@ public class Node {
         this.tLeft = tLeft;
     }
 
-    public HashSet<Token> getMyTokens() {
+    public THashSet<Token> getMyTokens() {
         return myTokens;
     }
 
-    public void setMyTokens(HashSet<Token> myTokens) {
+    public void setMyTokens(THashSet<Token> myTokens) {
         this.myTokens = myTokens;
     }
 
-    public HashSet<Token> getBoardTokens() {
+    public THashSet<Token> getBoardTokens() {
         return boardTokens;
     }
 
-    public void setBoardTokens(HashSet<Token> boardTokens) {
+    public void setBoardTokens(THashSet<Token> boardTokens) {
         this.boardTokens = boardTokens;
     }
 
@@ -77,10 +79,10 @@ public class Node {
             // No tokens on board, any token is successor.
             if (tLeft==null){
                 for (Token t: myTokens) {
-                    HashSet<Token> updatedMyTokens = new HashSet<>();
+                    THashSet<Token> updatedMyTokens = new THashSet<>();
                     for (Token t1: myTokens) updatedMyTokens.add(t1);
                     updatedMyTokens.remove(t);
-                    HashSet<Token> updatedBoardTokens = new HashSet<>();
+                    THashSet<Token> updatedBoardTokens = new THashSet<>();
                     for (Token t1: boardTokens) updatedBoardTokens.add(t1);
                     updatedBoardTokens.add(t);
                     successors.add(new Node(t.getNleft(), t.getNright(), updatedMyTokens, updatedBoardTokens, t, level+1));
@@ -89,11 +91,11 @@ public class Node {
             else {
                 if (level%2==0) {
                     for (Token t : myTokens) {
-                        HashSet<Token> updatedMyTokens = new HashSet<>();
+                        THashSet<Token> updatedMyTokens = new THashSet<>(myTokens.size());
                         for (Token t1 : myTokens) updatedMyTokens.add(t1);
 
                         updatedMyTokens.remove(t);
-                        HashSet<Token> updatedBoardTokens = new HashSet<>();
+                        THashSet<Token> updatedBoardTokens = new THashSet<>(boardTokens.size()+1);
                         for (Token t1 : boardTokens) updatedBoardTokens.add(t1);
                         updatedBoardTokens.add(t);
 
@@ -119,9 +121,9 @@ public class Node {
                 } else{
                     for (Token t : DominoGame.totalTokens) {
                         if (!myTokens.contains(t) && !boardTokens.contains(t)){
-                            HashSet<Token> updatedMyTokens = new HashSet<>();
+                            THashSet<Token> updatedMyTokens = new THashSet<>(myTokens.size());
                             for (Token t1 : myTokens) updatedMyTokens.add(t1);
-                            HashSet<Token> updatedBoardTokens = new HashSet<>();
+                            THashSet<Token> updatedBoardTokens = new THashSet<>(myTokens.size());
                             for (Token t1 : boardTokens) updatedBoardTokens.add(t1);
                             updatedBoardTokens.add(t);
 
@@ -179,7 +181,7 @@ public class Node {
 
     // Changes tokens of the current player
     public Node turnTokens () {
-        HashSet <Token> newTokens = new HashSet<>();
+        THashSet <Token> newTokens = new THashSet<>();
         for (Token t : DominoGame.totalTokens){
             if (!myTokens.contains(t) && !boardTokens.contains(t)) newTokens.add(t);
         }

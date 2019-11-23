@@ -1,3 +1,5 @@
+import gnu.trove.THashSet;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +15,20 @@ public class Heuristic {
      // Initiate tunned up maximum epxloration levels.
      static  {
          for (HEURISTICS h : HEURISTICS.values()){
-             maxLevels.put(Heuristic.printHeuristic(h)+"minimax", 7);
+             maxLevels.put(Heuristic.printHeuristic(h)+"minimax", 9);
          }
          for (HEURISTICS h : HEURISTICS.values()){
              maxLevels.put(Heuristic.printHeuristic(h)+"alphabeta", 13);
          }
      }
-
+     public static void resetLevels(){
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.TVAL)+"minimax", 7);
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.DDST)+"minimax", 7);
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.HCMC)+"minimax", 7);
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.TVAL)+"alphabeta", 13);
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.DDST)+"alphabeta", 12);
+         maxLevels.put(Heuristic.printHeuristic(HEURISTICS.HCMC)+"alphabeta", 11);
+     }
 
      public static float apply (HEURISTICS h, Node node){
          float value = 0f;
@@ -48,7 +57,7 @@ public class Heuristic {
             else totalResult-=0.5;
         }
         // Second value: Number of different numbers in our tokens.
-        HashSet<Integer> numbers = new HashSet<>();
+        THashSet<Integer> numbers = new THashSet<>();
         for (Token t: node.getMyTokens()){
             if (!numbers.contains(t.getNleft())) numbers.add(t.getNleft());
             if (!numbers.contains(t.getNright())) numbers.add(t.getNright());
@@ -93,7 +102,7 @@ public class Heuristic {
         }
         // Contrary used last token.
         else {
-            HashSet<Token> contraryTokens = new HashSet<>();
+            THashSet<Token> contraryTokens = new THashSet<>();
             for (Token t : DominoGame.totalTokens){
                 if (!node.getMyTokens().contains(t) && !node.getBoardTokens().contains(t)) contraryTokens.add(t);
             }

@@ -1,21 +1,23 @@
 import java.util.*;
+import gnu.trove.THashSet;
+
 
 enum ALGORITHM { MINIMAX, ALPHABETA, NONE};
 
 public class DominoPlayer {
-    private HashSet<Token> myTokens;
+    private THashSet<Token> myTokens;
     private String name;
     private HEURISTICS h;
 
     // Constructor for cpu.
-    public DominoPlayer (String name, HashSet<Token> tokens, HEURISTICS hs){
+    public DominoPlayer (String name, THashSet<Token> tokens, HEURISTICS hs){
         myTokens = tokens;
         this.name=name;
         h = hs;
     }
 
     // Constructor for human player.
-    public DominoPlayer (String name, HashSet<Token> tokens) {
+    public DominoPlayer (String name, THashSet<Token> tokens) {
         myTokens = tokens;
         this.name = name;
     }
@@ -110,11 +112,11 @@ public class DominoPlayer {
         }
     }
 
-    public HashSet<Token> getMyTokens() {
+    public THashSet<Token> getMyTokens() {
         return myTokens;
     }
 
-    public void setMyTokens(HashSet<Token> myTokens) {
+    public void setMyTokens(THashSet<Token> myTokens) {
         this.myTokens = myTokens;
     }
 

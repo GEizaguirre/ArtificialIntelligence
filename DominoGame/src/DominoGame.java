@@ -1,3 +1,5 @@
+import gnu.trove.THashSet;
+
 import java.util.*;
 
 public class DominoGame {
@@ -8,25 +10,25 @@ public class DominoGame {
     public static int NUM_TOKENS = 28;
     public final static Integer FIRST_LEFT = 6;
     public static final Integer FIRST_RIGHT = 6;
-    public static HashSet<Token> totalTokens;
-    public static HashSet<Token> boardTokens;
+    public static THashSet<Token> totalTokens;
+    public static THashSet<Token> boardTokens;
     public static boolean end = false;
     public static Integer nleft, nright;
 
     public static void start () {
         generateDominoTokens();
-        boardTokens = new HashSet<>();
+        boardTokens = new THashSet<>();
         end = false;
     }
 
     public static void clear() {
-        totalTokens = new HashSet<>();
-        boardTokens = new HashSet<>();
+        totalTokens = new THashSet<>();
+        boardTokens = new THashSet<>();
         end=true;
 
     }
 
-    public static boolean isEnd(HashSet<Token> userTokens){
+    public static boolean isEnd(THashSet<Token> userTokens){
 
         if (userTokens.size()==0) return true;
         // Test user's movements.
@@ -47,7 +49,7 @@ public class DominoGame {
     }
 
     public static void generateDominoTokens(){
-        totalTokens = new HashSet<>();
+        totalTokens = new THashSet<>();
         for (int i=MIN_NUM; i<=MAX_NUM; i++){
             for (int j=i; j<=MAX_NUM; j++){
                 totalTokens.add(new Token(i,j));
@@ -56,7 +58,7 @@ public class DominoGame {
         NUM_TOKENS = totalTokens.size();
     }
 
-    public static void setTotalTokens(HashSet<Token> tt) {
+    public static void setTotalTokens(THashSet<Token> tt) {
         totalTokens = tt;
     }
 
@@ -64,10 +66,6 @@ public class DominoGame {
 
         boardTokens.addAll(node.getBoardTokens());
         end = node.isFinal();
-        /*System.out.println("-------");
-        Interface.printTokenSet(node.getBoardTokens());
-        Interface.printTokenSet(node.getMyTokens());
-        System.out.println("-------");*/
         nleft = node.gettLeft();
         nright = node.gettRight();
 
@@ -99,7 +97,7 @@ public class DominoGame {
         }
     }
 
-    public static boolean testTie (HashSet<Token> u1, HashSet<Token> u2){
+    public static boolean testTie (THashSet<Token> u1, THashSet<Token> u2){
         if (!u1.isEmpty() && !u2.isEmpty())
             return ((u1.stream().map( (x) ->  x.getNright() + x.getNleft() ).reduce(0, Integer::sum) )
                     ==

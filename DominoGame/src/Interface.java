@@ -1,3 +1,5 @@
+import gnu.trove.THashSet;
+
 import java.util.*;
 
 public class Interface {
@@ -13,14 +15,17 @@ public class Interface {
         System.out.println("**Author: German Telmo Eizaguirre Suarez**");
         System.out.println(" (1) Play against the machine.");
         System.out.println(" (2) Execute performance evaluation.");
+        System.out.println(" (3) Watch two computers play.");
         System.out.print(">");
         option = Integer.parseInt(in.nextLine());
-        while (option != 1 && option != 2) {
+        while (option != 1 && option != 2 && option!=3) {
             System.out.println("Wrong option.");
             option = Integer.parseInt(in.nextLine());
         }
         if (option==1) playerGame();
-        else testExecution();
+        else if (option==2) testExecution();
+        else combatCPUsVerbose(HEURISTICS.TVAL, HEURISTICS.DDST, ALGORITHM.MINIMAX, ALGORITHM.MINIMAX);
+
     }
 
     public static void testExecution() {
@@ -35,19 +40,20 @@ public class Interface {
         HashMap<Integer, List<Double>> worsResults;
         HashMap<Integer, List<Double>> totResults;
 
-        /*for (HEURISTICS heu : HEURISTICS.values()) {
+        for (HEURISTICS heu : HEURISTICS.values()) {
             System.out.println("·················" + Heuristic.printHeuristic(heu) + "····················");
             avgResults  = new HashMap<>();
             worsResults  = new HashMap<>();
             totResults  = new HashMap<>();
 
-            for (int level = 1; level <= 8; level++) {
+            for (int level = 1; level <= 9; level++) {
                 Heuristic.setMaxLevel(heu, "minimax", level);
                 List<Double> levResults1 = new LinkedList<>();
                 List<Double> levResults2 = new LinkedList<>();
                 List<Double> levResults3 = new LinkedList<>();
                 for (int i = 0; i < 10; i++) {
                     try {
+                        System.gc();
                         GameResult ar = combatCPUsSilent(heu, heu, ALGORITHM.MINIMAX, ALGORITHM.MINIMAX);
                         //System.out.println(ar.getAvgDecisionTime());
                         levResults1.add(ar.getAvgDecisionTime());
@@ -67,42 +73,43 @@ public class Interface {
             }
             System.out.println("Average time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<9; j++){
+                for (int j=1; j<10; j++){
                     System.out.print(avgResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
             System.out.println("Worst time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<9; j++){
+                for (int j=1; j<10; j++){
                     System.out.print(worsResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
             System.out.println("Total time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<9; j++){
+                for (int j=1; j<10; j++){
                     System.out.print(totResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
         }
-        */
 
-        /*System.out.println("*************AlBeta tests****************");
+
+        System.out.println("*************AlBeta tests****************");
         for (HEURISTICS heu : HEURISTICS.values()) {
             System.out.println("·················" + Heuristic.printHeuristic(heu) + "····················");
             avgResults  = new HashMap<>();
             worsResults  = new HashMap<>();
             totResults  = new HashMap<>();
 
-            for (int level = 1; level <= 13; level++) {
+            for (int level = 1; level <= 15; level++) {
                 Heuristic.setMaxLevel(heu, "alphabeta", level);
                 List<Double> levResults1 = new LinkedList<>();
                 List<Double> levResults2 = new LinkedList<>();
                 List<Double> levResults3 = new LinkedList<>();
                 for (int i = 0; i < 10; i++) {
                     try {
+                        System.gc();
                         GameResult ar = combatCPUsSilent(heu, heu, ALGORITHM.ALPHABETA, ALGORITHM.ALPHABETA);
                         //System.out.println(ar.getAvgDecisionTime());
                         levResults1.add(ar.getAvgDecisionTime());
@@ -122,27 +129,29 @@ public class Interface {
             }
             System.out.println("Average time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<14; j++){
+                for (int j=1; j<16; j++){
                     System.out.print(avgResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
             System.out.println("Worst time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<14; j++){
+                for (int j=1; j<16; j++){
                     System.out.print(worsResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
             System.out.println("Total time");
             for (int i=0; i<10; i++){
-                for (int j=1; j<14; j++){
+                for (int j=1; j<16; j++){
                     System.out.print(totResults.get(j).get(i)+"\t");
                 }
                 System.out.println();
             }
-        }*/
+        }
 
+
+        Heuristic.resetLevels();
 
         System.out.println(" GAME QUALITY IN MINIMAX");
         List <String> winnerList = new LinkedList<String>();
@@ -151,10 +160,11 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getWinnerName());
         }
+        System.out.println();
         System.out.println("\nTVAL vs DDST - 40 games played");
         System.out.print("TVAL wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu1")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("DDST wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu2")==0 ).count()*100/winnerList.size()+"%");
-        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("tie")==0 ).count()*100/winnerList.size()+"%");
+        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("Tie")==0 ).count()*100/winnerList.size()+"%");
 
         winnerList = new LinkedList<String>();
         for (int i=0; i<40; i++){
@@ -162,10 +172,11 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getWinnerName());
         }
+        System.out.println();
         System.out.println("TVAL vs HCMC - 40 games played");
         System.out.print("TVAL wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu1")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("HCMC wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu2")==0 ).count()*100/winnerList.size()+"%");
-        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("tie")==0 ).count()*100/winnerList.size()+"%");
+        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("Tie")==0 ).count()*100/winnerList.size()+"%");
 
         winnerList = new LinkedList<String>();
         for (int i=0; i<40; i++){
@@ -173,10 +184,11 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getWinnerName());
         }
+        System.out.println();
         System.out.println("DDST vs HCMC - 40 games played");
         System.out.print("DDST wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu1")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("HCMC wins: "+(float)winnerList.stream().filter( x -> x.compareTo("cpu2")==0 ).count()*100/winnerList.size()+"%");
-        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("tie")==0 ).count()*100/winnerList.size()+"%");
+        System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("Tie")==0 ).count()*100/winnerList.size()+"%");
 
 
 
@@ -188,6 +200,7 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getAlgorithm());
         }
+        System.out.println();
         System.out.println("Minimax vs alphabeta - 40 games played");
         System.out.print("Minimax wins: "+(float)winnerList.stream().filter( x -> x.compareTo("minimax")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("Alphabeta wins: "+(float)winnerList.stream().filter( x -> x.compareTo("alphabeta")==0 ).count()/winnerList.size()+"%");
@@ -199,6 +212,7 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getAlgorithm());
         }
+        System.out.println();
         System.out.println("Minimax vs alphabeta - 40 games played");
         System.out.print("Minimax wins: "+(float)winnerList.stream().filter( x -> x.compareTo("minimax")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("Alphabeta wins: "+(float)winnerList.stream().filter( x -> x.compareTo("alphabeta")==0 ).count()*100/winnerList.size()+"%");
@@ -210,12 +224,11 @@ public class Interface {
             System.out.print(i+" ");
             winnerList.add(ar.getAlgorithm());
         }
+        System.out.println();
         System.out.println("Minimax vs alphabeta - 40 games played");
         System.out.print("Minimax wins: "+(float)winnerList.stream().filter( x -> x.compareTo("minimax")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("Alphabeta wins: "+(float)winnerList.stream().filter( x -> x.compareTo("alphabeta")==0 ).count()*100/winnerList.size()+"%");
         System.out.print("Ties: "+(float)winnerList.stream().filter( x -> x.compareTo("NONE")==0 ).count()*100/winnerList.size()+"%");
-
-
 
 
     }
@@ -227,8 +240,8 @@ public class Interface {
         // Set up.
         DominoGame.clear();
         DominoGame.start();
-        DominoPlayer cpu1 = new DominoPlayer("cpu1", new HashSet<>(), h1);
-        DominoPlayer cpu2 = new DominoPlayer("cpu2", new HashSet<>(), h2);
+        DominoPlayer cpu1 = new DominoPlayer("cpu1", new THashSet<>(), h1);
+        DominoPlayer cpu2 = new DominoPlayer("cpu2", new THashSet<>(), h2);
         DominoGame.distributeCards(cpu1, cpu2);
 
         // Game
@@ -280,7 +293,7 @@ public class Interface {
             if (currentNode != null) {
                 if (currentNode.getBoardTokens().size() != DominoGame.boardTokens.size()) {
                     System.out.println("Set: <" + currentNode.getLastToken().getNleft() + ">--<" + currentNode.getLastToken().getNright() + ">");
-                    Boolean res = currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
+                    currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
                     if (lastToken == null)
                         lastToken = new Token(currentNode.getLastToken().getNright(), currentNode.getLastToken().getNleft());
                     else {
@@ -289,12 +302,7 @@ public class Interface {
                     }
 
                     DominoGame.update(currentNode);
-                    if (!res) {
-                        System.out.println("--------");
-                        System.out.println("ERROR");
-                        printTokenSet(currentNode.getMyTokens());
-                        System.out.println("--------");
-                    }
+
                 }
                 System.out.println("Board state: <" + DominoGame.nleft + ">--<" + DominoGame.nright + ">");
                 printTokenSet(DominoGame.boardTokens);
@@ -357,8 +365,8 @@ public class Interface {
         // Set up.
         DominoGame.clear();
         DominoGame.start();
-        DominoPlayer cpu1 = new DominoPlayer("cpu1", new HashSet<>(), h1);
-        DominoPlayer cpu2 = new DominoPlayer("cpu2", new HashSet<>(), h2);
+        DominoPlayer cpu1 = new DominoPlayer("cpu1", new THashSet<>(), h1);
+        DominoPlayer cpu2 = new DominoPlayer("cpu2", new THashSet<>(), h2);
         DominoGame.distributeCards(cpu1, cpu2);
 
         // Game
@@ -394,7 +402,7 @@ public class Interface {
             // Test result.
             if (currentNode != null) {
                 if (currentNode.getBoardTokens().size() != DominoGame.boardTokens.size()) {
-                    Boolean res = currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
+                    currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
                     if (lastToken == null)
                         lastToken = new Token(currentNode.getLastToken().getNright(), currentNode.getLastToken().getNleft());
                     else {
@@ -402,12 +410,7 @@ public class Interface {
                         lastToken.setNleft(currentNode.getLastToken().getNleft());
                     }
                     DominoGame.update(currentNode);
-                    if (!res) {
-                        System.out.println("--------");
-                        System.out.println("ERROR");
-                        printTokenSet(currentNode.getMyTokens());
-                        System.out.println("--------");
-                    }
+
                 }
                 if (currentNode.isFinal()) {
                     DominoGame.end = true;
@@ -501,8 +504,8 @@ public class Interface {
         // Set up.
         DominoGame.clear();
         DominoGame.start();
-        DominoPlayer cpu = new DominoPlayer("cpu", new HashSet<>(), h);
-        DominoPlayer user = new DominoPlayer("user", new HashSet<>());
+        DominoPlayer cpu = new DominoPlayer("cpu", new THashSet<>(), h);
+        DominoPlayer user = new DominoPlayer("user", new THashSet<>());
         DominoGame.distributeCards(cpu, user);
 
         // Game
@@ -516,55 +519,33 @@ public class Interface {
             System.out.println("-·-·-·-·-·-·-·-·-·-·-·--·-·-·-·-·-·-·-·-·-·-·-");
             if (cpuTurn) {
                 System.out.println("CPU moves...");
-                System.out.println("Tokens before cpu turn");
-                printTokenSet(currentNode.getMyTokens());
-                if (!currentNode.getBoardTokens().isEmpty()) {
-                    System.out.println("Board tokens before cpu turn");
-                    printTokenSet(currentNode.getBoardTokens());
-                    System.out.println("Last token:" + currentNode.getLastToken().graphicFormat());
-                }
                 currentAlgorithmResult = cpu.playTurn(currentNode, alg);
-                System.out.println("Tokens after cpu turn");
-                printTokenSet(currentAlgorithmResult.getNode().getMyTokens());
-                System.out.println("Board tokens after cpu turn");
-                printTokenSet(currentAlgorithmResult.getNode().getBoardTokens());
+
                 System.out.println("Set " + currentAlgorithmResult.getNode().getLastToken().graphicFormat());
             } else {
                 System.out.println("You move...");
-                System.out.println("Board size before user turn." + DominoGame.boardTokens.size());
                 currentAlgorithmResult = userMove(currentNode, user);
             }
             currentNode = currentAlgorithmResult.getNode();
-            System.out.println("Tokens after user turn");
-            printTokenSet(currentNode.getMyTokens());
-            System.out.println("Board tokens after user turn");
-            printTokenSet(currentNode.getBoardTokens());
-            System.out.println("Last token:" + currentNode.getLastToken().graphicFormat());
+
 
             // Test result.
             if (currentNode != null) {
-                System.out.println("Current node is no null");
-                System.out.println("cuurent node board size:" + currentNode.getBoardTokens().size());
-                System.out.println("game node board size:" + DominoGame.boardTokens.size());
+
                 // If not passed.
                 if (currentNode.getBoardTokens().size() != DominoGame.boardTokens.size()) {
-                    System.out.println("Did not pass game.");
-                    Boolean res = currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
+
+                    currentPlayer.removeToken(currentNode.getLastToken().getNleft(), currentNode.getLastToken().getNright());
                     if (lastToken == null) {
-                        System.out.println("Creating new last token");
+
                         lastToken = new Token(currentNode.getLastToken().getNright(), currentNode.getLastToken().getNleft());
                     } else {
-                        System.out.println("Last token is not null");
+
                         lastToken.setNright(currentNode.getLastToken().getNright());
                         lastToken.setNleft(currentNode.getLastToken().getNleft());
                     }
                     DominoGame.update(currentNode);
-                    if (!res) {
-                        System.out.println("--------");
-                        System.out.println("ERROR");
-                        printTokenSet(currentNode.getMyTokens());
-                        System.out.println("--------");
-                    }
+
                 }
                 if (currentNode.isFinal()) {
                     DominoGame.end = true;
@@ -573,19 +554,14 @@ public class Interface {
                         if (cpuTurn) {
                             winner = (currentAlgorithmResult.getResult() == Integer.MAX_VALUE) ? cpu.getName() : user.getName();
                         } else {
-                            winner = (currentAlgorithmResult.getResult() == Integer.MAX_VALUE) ? user.getName() : cpu.getName();
+                            winner = (currentAlgorithmResult.getNode().amIWinner() ) ? user.getName() : cpu.getName();
                         }
                     }
                 } else {
                     cpuTurn = !cpuTurn;
                     currentPlayer = cpuTurn ? cpu : user;
-                    System.out.println("New current node");
+
                     currentNode = new Node(DominoGame.nleft, DominoGame.nright, currentPlayer.getMyTokens(), copyTokenSet(DominoGame.boardTokens), lastToken, 0);
-                    System.out.println("User tokens of new current node");
-                    printTokenSet(currentNode.getMyTokens());
-                    System.out.println("Board tokensof new current node");
-                    printTokenSet(currentNode.getBoardTokens());
-                    System.out.println("Last token of new current node:" + currentNode.getLastToken().graphicFormat());
                 }
             } else {
 
@@ -708,7 +684,7 @@ public class Interface {
         }
     }
 
-    public static void printTokenSet(HashSet<Token> set) {
+    public static void printTokenSet(THashSet<Token> set) {
         int counter = 0;
         for (Token f : set) {
             System.out.print("  " + f.graphicFormat());
@@ -736,8 +712,8 @@ public class Interface {
 
     }
 
-    public static HashSet<Token> copyTokenSet(HashSet<Token> oldSet) {
-        HashSet<Token> newSet = new HashSet<>();
+    public static THashSet<Token> copyTokenSet(THashSet<Token> oldSet) {
+        THashSet<Token> newSet = new THashSet<>();
         newSet.addAll(oldSet);
         return newSet;
     }
