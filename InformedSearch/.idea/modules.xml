@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/Eizaguirre_German_AI_P1_code.iml" filepath="$PROJECT_DIR$/Eizaguirre_German_AI_P1_code.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/InformedSarch_AI.iml" filepath="$PROJECT_DIR$/InformedSarch_AI.iml" />
+>>>>>>> german
     </modules>
   </component>
 </project>
