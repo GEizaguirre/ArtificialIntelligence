@@ -611,19 +611,24 @@ public class Interface {
             }
         } else {
             for (Token t : user.getMyTokens()) {
+                Boolean simmetric = (t.getNright()==t.getNleft());
+                Boolean lseen = false;
+                Boolean rseen = false;
                 if (t.getNleft() == currentNode.gettLeft()) {
                     System.out.println(" (" + (counter++) + ")\t[<" + t.getNright() + ">-<" + t.getNleft() + ">] <" + currentNode.gettLeft() + ">-<" + currentNode.gettRight() + ">");
                     ltm.add(new TokenMove(t, "l", "l"));
+                    if (simmetric) lseen=true;
                 }
-                if (t.getNright() == currentNode.gettLeft()) {
+                if (!(simmetric && lseen) && (t.getNright() == currentNode.gettLeft())) {
                     System.out.println(" (" + (counter++) + ")\t[<" + t.getNleft() + ">-<" + t.getNright() + ">] <" + currentNode.gettLeft() + ">-<" + currentNode.gettRight() + ">");
                     ltm.add(new TokenMove(t, "r", "l"));
                 }
                 if (t.getNright() == currentNode.gettRight()) {
                     System.out.println(" (" + (counter++) + ")\t          <" + currentNode.gettLeft() + ">-<" + currentNode.gettRight() + "> [<" + t.getNright() + ">-<" + t.getNleft() + ">]");
                     ltm.add(new TokenMove(t, "r", "r"));
+                    if (simmetric) rseen=true;
                 }
-                if (t.getNleft() == currentNode.gettRight()) {
+                if (!(simmetric && rseen) && (t.getNleft() == currentNode.gettRight())) {
                     System.out.println(" (" + (counter++) + ")\t          <" + currentNode.gettLeft() + ">-<" + currentNode.gettRight() + "> [<" + t.getNleft() + ">-<" + t.getNright() + ">]");
                     ltm.add(new TokenMove(t, "l", "r"));
                 }
